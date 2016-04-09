@@ -1,0 +1,159 @@
+from urllib.parse import quote
+import json
+import requests
+import sys
+import re
+from yelp.client import Client
+from yelp.oauth1_authenticator import Oauth1Authenticator
+
+auth = Oauth1Authenticator(
+    consumer_key='LXzlm4Bdo4UL0CWDJ9sqzw',
+    consumer_secret='ZuqOH9TviTuklof62f_rDV1E6zA',
+    token='86R1fHmZwGXY1D0zSqlL8jb7wm7PQ7fg',
+    token_secret='s1iD6vAWs84NSPazsC5_s24HhWs'
+)
+
+client = Client(auth)
+
+subject = 'papa da vinci'
+
+if len(sys.argv) > 1:
+    subject = sys.argv[1]
+    sys.argv[2]
+    sys.argv[3]
+
+menus = {
+    'menus': []
+}
+
+def create_menu(name):
+    menu = {
+        'name': name,
+        'sections': []
+    }
+    return menu
+
+def create_section(name, description):
+    section = {
+        'name': name,
+        'description': description,
+        'items': []
+    }
+    return section
+
+def create_item(name, description, price):
+    item = {
+        'name': name,
+        'description': description,
+        'price': price
+    }
+    return item
+
+params = {
+    'term': subject
+}
+
+businesses = client.search('Pittsburgh', **params).businesses
+
+menu_object = ''
+for business in businesses:
+    provider = business.menu_provider
+    if provider:
+        menus['name'] = business.name
+        menus['logo'] = business.image_url
+        menus['stars'] = business.rating
+        menus['reviews'] = business.review_count
+
+        name = quote(business.name)
+
+        locu_key = '705dd0bae9197fd1ea36912f49473722092639c4'
+        foursquare_id = 'YGL0AT5G1Y3NDAD34DUWL5RV00SDLGZHSS0YSLG24TDHZBWH'
+        foursquare_secret = 'TSKVWGPB2PBR34XZ0WC3RT50YZH1SUZUARUXAV2YFMPFURZS'
+        foursquare_key = 'client_id='+ foursquare_id + '&client_secret=' + foursquare_secret + '&v=20160405'
+
+        # Locu
+        menu_object = ''
+        url = 'https://api.locu.com/v1_0/venue/search/?name=' + name + '&locality=pittsburgh&api_key=' + locu_key
+        place = requests.get(url).json()
+
+        if len(place['objects']) > 0:
+            place_id = place['objects'][0]['id']
+            url = 'https://api.locu.com/v1_0/venue/' + place_id + '/?api_key=' + locu_key
+            menu_object = requests.get(url).json()
+
+        # Check locu
+        if len(menu_object) > 0 and len(menu_object['objects'][0]['menus']) > 0:
+            for i, menu in enumerate(menu_object['objects'][0]['menus']):
+                name = ''
+                if 'menu_name' in menu:
+                    name = menu['menu_name']
+                menus['menus'].append(create_menu(name))
+                for j, section in enumerate(menu['sections']):
+                    if 'section_name' in section:
+                        name = section['section_name']
+                        description = ''
+                        menus['menus'][i]['sections'].append(create_section(name, description))
+                    for subsection in section['subsections']:
+                        if 'subsection_name' in section:
+                            name = section['subsection_name']
+                            description = ''
+                            menus['menus'][i]['sections'].append(create_section(name, description))
+                        for item in subsection['contents']:
+                            if item['type'] == 'ITEM':
+                                name = ''
+                                if 'name' in item:
+                                    name = item['name']
+                                description = ''
+                                if 'description' in item:
+                                    description = item['description']
+                                price = ''
+                                if 'price' in item:
+                                    price = item['price']
+                                menus['menus'][i]['sections'][j]['items'].append(create_item(name, description, price))
+                            elif item['type'] == 'SECTION_TEXT':
+                                description = ''
+                                if 'text' in item:
+                                    description = item['text']
+                                menus['menus'][i]['sections'][j]['description'] = description
+
+            break
+
+        # Foursquare
+        menu_object = ''
+        url = 'https://api.foursquare.com/v2/venues/search?ll=40.43767,-79.95599&query=' + name + '&' + foursquare_key
+        place = requests.get(url).json()
+
+        if 'venues' in place['response'] and len(place['response']['venues']) > 0:
+            place_id = place['response']['venues'][0]['id']
+            url = 'https://api.foursquare.com/v2/venues/' + place_id + '/menu?' + foursquare_key
+            menu_object = requests.get(url).json()
+
+        # Check foursquare
+        if len(menu_object) > 0 and menu_object['meta']['code'] == 200 and 'items' in menu_object['response']['menu']['menus']:
+            for i, menu in enumerate(menu_object['response']['menu']['menus']['items']):
+                name = ''
+                if 'name' in menu:
+                    name = menu['name']
+                menus['menus'].append(create_menu(name))
+                for j, section in enumerate(menu['entries']['items']):
+                    name = ''
+                    if 'name' in section:
+                        name = section['name']
+                    description = ''
+                    if 'description' in section:
+                        description = section['description']
+                    menus['menus'][i]['sections'].append(create_section(name, description))
+                    for item in section['entries']['items']:
+                        name = ''
+                        if 'name' in item:
+                            name = item['name']
+                        description = ''
+                        if 'description' in item:
+                            description = item['description']
+                        price = ''
+                        if 'price' in item:
+                            price = item['price']
+                        menus['menus'][i]['sections'][j]['items'].append(create_item(name, description, price))
+            break
+
+print(json.dumps(menus))

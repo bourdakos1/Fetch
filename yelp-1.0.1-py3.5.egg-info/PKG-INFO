@@ -1,0 +1,17 @@
+Metadata-Version: 1.1
+Name: yelp
+Version: 1.0.1
+Summary: Python Clientlib for Yelp Public API
+Home-page: https://github.com/Yelp/yelp-python
+Author: Yelp
+Author-email: partnerships@yelp.com
+License: MIT
+Description: UNKNOWN
+Keywords: yelp
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: Implementation :: CPython

@@ -1,0 +1,357 @@
+html, body {
+   height: 100%;
+   margin: 0;
+   background-size: 300px;
+   background-image: url("/images/background.png");
+   background-attachment: fixed;
+}
+
+#red_header {
+   position: fixed;
+   top: 0px;
+   left: 0px;
+   right: 0px;
+   margin: 0px;
+   height: 114px;
+   z-index: 0;
+   background-color: #f73f51;
+   box-shadow: 0 1px 0px 0 rgba(0, 0, 0, 0.2), 0 2px 0px 0 rgba(255, 255, 255, 255);
+}
+
+.bubble {
+   max-width: 55%;
+   padding: 6px 12px;
+   margin: 1px 0;
+   white-space:pre-wrap;
+   display: inline-block;
+   overflow-wrap: break-word;
+   word-wrap: break-word;
+   word-break: normal;
+   line-break: strict;
+   hyphens: none;
+   -webkit-hyphens: none;
+   -moz-hyphens: none;
+}
+
+.left {
+   float: left;
+   color: #000000;
+   background: #f1f0f0;
+}
+
+.right {
+   float: right;
+   color: #ffffff;
+   background: #fa3c4c;
+}
+
+.ltop {
+   border-radius: 1.3em 1.3em 1.3em 4px;
+}
+
+.lmiddle {
+   border-radius: 4px 1.3em 1.3em 4px;
+}
+
+.lbottom {
+   border-radius: 4px 1.3em 1.3em 1.3em;
+}
+
+.rtop {
+   border-radius: 1.3em 1.3em 4px 1.3em;
+}
+
+.rmiddle {
+   border-radius: 1.3em 4px 4px 1.3em;
+}
+
+.rbottom {
+   border-radius: 1.3em 4px 1.3em 1.3em;
+   margin-bottom: 15px;
+}
+
+.single {
+   border-radius: 1.3em;
+   margin-bottom: 15px;
+}
+
+.wrapper {
+   z-index: 2;
+   position: absolute;
+   background: #ffffff;
+   border-left: solid 1px #e6e6e6;
+   border-right: solid 1px #e6e6e6;
+   width: 700px;
+   float: left;
+}
+
+.expander {
+   z-index:1;
+   position: relative;
+   margin: 0 auto;
+   background: #ffffff;
+   width: 700px;
+   height: 100%;
+   padding-bottom: 2px;
+   background: white;
+   -webkit-transition: width 0.3s ease;
+   transition: width 0.3s ease;
+   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.menu_holder {
+   z-index:1;
+   position: relative;
+   text-align: center;
+   overflow-y: scroll;
+   background: white;
+   float: right;
+   width: 400px;
+   height: 100%;
+}
+
+.title {
+   display: inline-block;
+   float: left;
+}
+
+.price {
+   display: inline-block;
+   float: right;
+}
+
+.menu {
+   font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+   font-size: 14px;
+   color: #212121;
+   font-weight: normal;
+   -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility;
+   text-align: left;
+   margin: 0;
+   padding: 0;
+}
+
+.header {
+   padding-left: 20px;
+   padding-right: 32px;
+   padding-top: 20px;
+   padding-bottom: 16px;
+}
+
+.restaurant_logo{
+   width: 50px;
+   height: 50px;
+   border-radius: 50%;
+   float: left;
+}
+
+.reviews{
+   line-height: 27px;
+   float: right;
+   vertical-align: middle;
+}
+
+.restaurant_info {
+   overflow: hidden;
+   padding-left: 20px;
+}
+
+h1.menu {
+   font-size: 27px;
+}
+
+h2.menu {
+   margin-top: 16px;
+   margin-left: 16px;
+   margin-right: 16px;
+   font-weight: bold;
+   color: #48a7f2;
+   border-bottom: solid 1px #48a7f2;
+}
+
+h4.menu {
+   color: #9e9e9e;
+}
+
+.item {
+   padding: 16px;
+   padding-left: 32px;
+   padding-right: 32px;
+}
+
+.item+.item {
+   border-top: solid 1px #eeeeee;
+}
+
+.rating {
+  unicode-bidi: bidi-override;
+  color: #eeeeee;
+  font-size: 27px;
+  line-height: 27px;
+  vertical-align: middle;
+  float: left;
+  margin: 0 auto;
+  position: relative;
+  padding: 0;
+}
+
+.rating-top {
+    color: #fdc32d;
+    padding: 0;
+    position: absolute;
+    z-index: 1;
+    display: block;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+.rating-bottom {
+    padding: 0;
+    display: block;
+    z-index: 0;
+}
+
+#content {
+   font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+   font-size: 14px;
+   font-weight: normal;
+   -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility;
+   border-bottom: solid 1px #e6e6e6;
+   overflow-y: scroll;
+   padding: 0px 30px 0 12px;
+   margin: 0;
+}
+
+.controls {
+   width: 100%;
+}
+
+#title {
+   text-align: center;
+   font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+   font-size: 14px;
+   font-weight: 500;
+   -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility;
+   border-bottom: solid 1px #e6e6e6;
+   max-height: 144px;
+   min-height: 18px;
+   vertical-align: middle;
+   padding: 10px 0px 10px 0px;
+   margin: 0;
+}
+
+#field {
+   width: 90%;
+   font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+   font-size: 14px;
+   font-weight: normal;
+   -webkit-font-smoothing: antialiased;
+   text-rendering: optimizeLegibility;
+   word-wrap: break-word;
+   resize: none;
+   outline: none;
+   border: none;
+   max-height: 144px;
+   min-height: 18px;
+   vertical-align: middle;
+   padding: 16px 8px 16px 12px;
+   margin: 0;
+}
+
+.clearfix:after {
+   clear: both;
+   content: ".";
+   display: block;
+   font-size: 0;
+   height: 0;
+   line-height: 0;
+   visibility: hidden;
+}
+
+.clearfix {
+   zoom: 1
+}
+
+.dot {
+    width: 6px;
+    height: 6px;
+    background-color: #9197a3;
+    position: relative;
+    display: inline-block;
+    border-radius: 50%;
+    margin: 0;
+    padding: 0;
+    -webkit-animation-name: example;
+    -webkit-animation-duration: 4s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+    animation-name: example;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+}
+
+.loading {
+   display: inline-block;
+   max-width: 55%;
+   padding: 6px 12px;
+   margin: 1px 0;
+   float: left;
+   color: #000000;
+   background: #f1f0f0;
+   border-radius: 1.3em;
+}
+
+#a {
+
+    -webkit-animation-delay: 0s;
+    animation-delay: 0s;
+}
+#b {
+    -webkit-animation-delay: .15s;
+    animation-delay: .15s;
+}
+#c {
+    -webkit-animation-delay: .2s;
+    animation-delay: .2s;
+}
+
+
+/* Chrome, Safari, Opera */
+@-webkit-keyframes example {
+    0%   {top:0px;}
+    15%  {top:-6px;}
+    25%  {top:-6px;}
+    40%  {top:0px;}
+    100% {top:0px;}
+}
+
+/* Standard syntax */
+@keyframes example {
+    0%   {top:0px;}
+    15%  {top:-6px;}
+    25%  {top:-6px;}
+    40%  {top:0px;}
+    100% {top:0px;}
+}
+
+@media only screen and (max-width: 990px) {
+   .wrapper {
+      width: 100%;
+   }
+   #content {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+   }
+   #field {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+   }
+}

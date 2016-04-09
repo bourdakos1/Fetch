@@ -1,0 +1,59 @@
+<dialog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="WatsonDialogDocument_1.0.xsd">
+   <flow>
+      <folder label="Main">
+         <output>
+            <prompt selectionType="RANDOM">
+               <item>Hi there! I’m fetch, how can I help?</item>
+            </prompt>
+            <goto ref="getUserInput_2449614"/>
+         </output>
+         <getUserInput id="getUserInput_2449614">
+            <search ref="folder_2449611"/>
+            <default>
+               <output>
+                  <prompt selectionType="RANDOM">
+                     <item>
+                        Hmmm... I didn't quite catch that.
+                     </item>
+                  </prompt>
+               </output>
+            </default>
+         </getUserInput>
+      </folder>
+      <folder label="Library">
+         <folder label="Live Content" id="folder_2449611">
+            <input>
+               <grammar>
+                  <item>recommend</item>
+               </grammar>
+               <output>
+                  <prompt selectionType="RANDOM">
+                     <item>Would you like to try [restaurant]?</item>
+                  </prompt>
+               </output>
+            </input>
+            <input>
+               <grammar>
+                  <item>subject</item>
+               </grammar>
+               <output>
+                  <prompt selectionType="RANDOM">
+                     <item>Have you tried [restaurant]? They have pretty good [subject]!</item>
+                  </prompt>
+               </output>
+            </input>
+            <input>
+               <grammar>
+                  <item>restaurant</item>
+               </grammar>
+               <output>
+                  <prompt selectionType="RANDOM">
+                     <item>Sure here's a menu!</item>
+                  </prompt>
+               </output>
+            </input>
+         </folder>
+      </folder>
+      <folder label="Concepts" id="Concepts"></folder>
+   </flow>
+</dialog>
