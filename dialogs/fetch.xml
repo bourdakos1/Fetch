@@ -30,6 +30,28 @@
                   <prompt selectionType="RANDOM">
                      <item>Would you like to try [restaurant]?</item>
                   </prompt>
+                  <getUserInput>
+                     <input>
+                        <grammar>
+                           <item>yes</item>
+                           <item>yea</item>
+                           <item>yup</item>
+                           <item>sure</item>
+                           <item>okay</item>
+                           <item>yep</item>
+                           <item>yepp</item>
+                           <item>yes please</item>
+                        </grammar>
+                        <output>
+                           <action varName="menu_loaded" operator="SET_TO">true</action>
+                           <prompt selectionType="RANDOM">
+                              <item>
+                                 Okay, here's the menu!
+                              </item>
+                           </prompt>
+                        </output>
+                     </input>
+                  </getUserInput>
                </output>
             </input>
             <input>
@@ -38,8 +60,32 @@
                </grammar>
                <output>
                   <prompt selectionType="RANDOM">
-                     <item>Have you tried [restaurant]? They have pretty good [subject]!</item>
+                     <item>
+                        Have you tried [restaurant]? They have pretty good [subject]!
+                     </item>
                   </prompt>
+                  <getUserInput>
+                     <input>
+                        <grammar>
+                           <item>yes</item>
+                           <item>yea</item>
+                           <item>yup</item>
+                           <item>sure</item>
+                           <item>okay</item>
+                           <item>yep</item>
+                           <item>yepp</item>
+                           <item>yes please</item>
+                        </grammar>
+                        <output>
+                           <action varName="menu_loaded" operator="SET_TO">true</action>
+                           <prompt selectionType="RANDOM">
+                              <item>
+                                 Okay, here's the menu!
+                              </item>
+                           </prompt>
+                        </output>
+                     </input>
+                  </getUserInput>
                </output>
             </input>
             <input>
@@ -47,13 +93,19 @@
                   <item>restaurant</item>
                </grammar>
                <output>
+                  <action varName="menu_loaded" operator="SET_TO">true</action>
                   <prompt selectionType="RANDOM">
-                     <item>Sure here's a menu!</item>
+                     <item>Sure here's the menu!</item>
                   </prompt>
                </output>
             </input>
          </folder>
+         <folder label="Concepts" id="Concepts"></folder>
       </folder>
-      <folder label="Concepts" id="Concepts"></folder>
    </flow>
+   <variables>
+      <var_folder name="Home">
+         <var name="menu_loaded" type="TEXT" description="a menu has been loaded"/>
+      </var_folder>
+   </variables>
 </dialog>

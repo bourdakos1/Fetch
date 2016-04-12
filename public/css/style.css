@@ -46,6 +46,7 @@ html, body {
 }
 
 .ltop {
+   margin-top: 15px;
    border-radius: 1.3em 1.3em 1.3em 4px;
 }
 
@@ -58,6 +59,7 @@ html, body {
 }
 
 .rtop {
+   margin-top: 15px;
    border-radius: 1.3em 1.3em 4px 1.3em;
 }
 
@@ -67,12 +69,11 @@ html, body {
 
 .rbottom {
    border-radius: 1.3em 4px 1.3em 1.3em;
-   margin-bottom: 15px;
 }
 
 .single {
    border-radius: 1.3em;
-   margin-bottom: 15px;
+   margin-top: 15px;
 }
 
 .wrapper {
@@ -336,22 +337,4 @@ h4.menu {
     25%  {top:-6px;}
     40%  {top:0px;}
     100% {top:0px;}
-}
-
-@media only screen and (max-width: 990px) {
-   .wrapper {
-      width: 100%;
-   }
-   #content {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-   }
-   #field {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-   }
 }

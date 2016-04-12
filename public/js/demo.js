@@ -19,10 +19,26 @@
 'use strict';
 
 // conversation variables
+var context = '/proxy/api';
 var conversation_id, client_id;
 var messages = new Array();
+var menu = false;
+var menu_data;
 
 $(document).ready(function () {
+   var loading = function() {
+      var $chatBox = $('#content');
+      var html = '';
+      html += '<div class="clearfix" style="margin-top: -23px;">';
+      html += '   <div class="loading">';
+      html += '      <div class="dot" id="a"></div>';
+      html += '      <div class="dot" id="b"></div>';
+      html += '      <div class="dot" id="c"></div>';
+      html += '   </div>';
+      html += '</div>';
+      html += '</br>';
+      $chatBox.append(html);
+   }
    var buildMenu = function(subject) {
       var params = {
          'subject' : subject
@@ -32,10 +48,14 @@ $(document).ready(function () {
       .done(function onSucess(answer) {
          console.log('parsing');
          answer = $.parseJSON(answer);
+         menu_data = answer;
          if (answer.name == undefined) {
             talk(true, 'Sorry, I dont understand');
+            menu = false;
             return;
          }
+         menu = true;
+         // Load the menu
          var html = '';
          html += '<div class="menu header">';
          html +=	'  <img src="' + answer.logo + '" class="restaurant_logo">';
@@ -62,12 +82,21 @@ $(document).ready(function () {
             }
          }
          $('#menu').html(html);
+
+         // This is a bad name, I should change it to something else
          var openMenu = false;
+
+         // Check if its a restaurant or a food item
          if (answer.name.toLowerCase() == subject.replace(/(\r\n|\n|\r)/gm,'').toLowerCase()) {
             var params = { input : 'restaurant' };
             openMenu = true;
+         } else if (subject.replace(/(\r\n|\n|\r)/gm,'').toLowerCase() == 'best') {
+            openMenu = true;
+            var params = { input : 'recommend' };
          } else {
             var params = { input : 'subject' };
+            talk(true,  "hmmmm");
+            loading();
          }
 
          // check if there is a conversation in place and continue that
@@ -76,6 +105,7 @@ $(document).ready(function () {
             params.conversation_id = conversation_id;
             params.client_id = client_id;
          }
+
          $.post('/conversation', params)
          .done(function onSucess(dialog) {
             conversation_id = dialog.conversation.conversation_id;
@@ -85,14 +115,8 @@ $(document).ready(function () {
             text = text.replace("[restaurant]", answer.name);
             text = text.replace("[subject]", subject.replace(/(\r\n|\n|\r)/gm,''));
             talk(true,  text);
-            if (openMenu) {
-               $(".expander").css({
-                  width: "1100px"
-               });
-            } else {
-               $(".expander").css({
-                  width: "700px"
-               });
+            if (!openMenu) {
+               talk(true,  "Would you like to see the menu?");
             }
          });
       });
@@ -114,26 +138,13 @@ $(document).ready(function () {
    });
 
    $(function(){
-      if (window.matchMedia('(max-width: 990px)').matches) {
-         $('#content').css({
-            bottom: $chatInput.innerHeight()
-         });
-      } else {
+      $('#content').css({
+         height: $(window).innerHeight() - ($chatInput.innerHeight() + $('#title').innerHeight())
+      });
+      $(window).resize(function(){
          $('#content').css({
             height: $(window).innerHeight() - ($chatInput.innerHeight() + $('#title').innerHeight())
          });
-      }
-      $(window).resize(function(){
-         if (window.matchMedia('(max-width: 990px)').matches) {
-            $('#content').css({
-               bottom: $chatInput.innerHeight()
-            });
-            console.log("bottom");
-         } else {
-            $('#content').css({
-               height: $(window).innerHeight() - ($chatInput.innerHeight() + $('#title').innerHeight())
-            });
-         }
       });
    });
 
@@ -143,74 +154,80 @@ $(document).ready(function () {
       if (typeof(userText) !== undefined && $.trim(userText) !== '')
       submitMessage(userText);
 
-      if (userText.toLowerCase() == "yes" || userText.toLowerCase() == "yea" || userText.toLowerCase() == "sure") {
-         $(".expander").css({
-            width: "1100px"
-         });
-         return;
-      }
+      // If the menu is open, take orders, no need to classify
+      if (menu) {
 
-      if (userText.toLowerCase() == "close") {
-         $(".expander").css({
-            width: "700px"
-         });
-         return;
-      }
-
-      $.post('/api/classify', {text: userText})
-      .done(function onSucess(answers){
-         var $chatBox = $('#content');
-         var html = '';
-         html += '<div class="clearfix">';
-         html += '   <div class="loading">';
-         html += '      <div class="dot" id="a"></div>';
-         html += '      <div class="dot" id="b"></div>';
-         html += '      <div class="dot" id="c"></div>';
-         html += '   </div>';
-         html += '</div>';
-         html += '</br>';
-         $chatBox.append(html);
-         $chatInput.val(''); // clear the text input
-         console.log(answers.top_class);
-         console.log(Math.floor(answers.classes[0].confidence * 100) + '%');
-
-         if (answers.top_class == 'food') {
-
-            var params = {
-               'question' : userText
-            };
-
-            $.post('/parse', params)
-            .done(function onSucess(answer) {
-               console.log(answer);
-               buildMenu(answer);
-            });
-         } else {
-            var params = { input : answers.top_class };
-
-            if (conversation_id) {
-               params.conversation_id = conversation_id;
-               params.client_id = client_id;
+         for (var k = 0; k < menu_data.menus.length; k++) {
+            for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
+               var section = menu_data.menus[k].sections[i];
+               for (var j = 0; j < section.items.length; j++) {
+                  if (section.items[j].name == userText) {
+                     console.log('One order of ' + userText);
+                     talk(true, '1 ' + userText + ', anything else?');
+                     return;
+                  }
+               }
             }
-            $.post('/conversation', params)
-            .done(function onSucess(dialog) {
-               conversation_id = dialog.conversation.conversation_id;
-               client_id = dialog.conversation.client_id;
-               console.log(dialog);
-               talk(true, dialog.conversation.response.join(''));
-            });
          }
-         $chatInput.show();
-         $chatInput.focus();
-      })
-      .fail(function onError(error) {
-         console.log('classifier failed');
-      })
-      .always(function always(){
-         scrollChatToBottom();
-         $chatInput.focus();
-      });
 
+         var params = { input : userText };
+
+         if (conversation_id) {
+            params.conversation_id = conversation_id;
+            params.client_id = client_id;
+         }
+
+         $.post('/conversation', params)
+         .done(function onSucess(dialog) {
+            conversation_id = dialog.conversation.conversation_id;
+            client_id = dialog.conversation.client_id;
+            console.log(dialog);
+            var text = dialog.conversation.response.join('');
+            talk(true,  text);
+         });
+
+      // Classify
+      } else {
+         $.post('/api/classify', {text: userText})
+         .done(function onSucess(answers){
+            loading();
+            $chatInput.val(''); // clear the text input
+            console.log(answers.top_class);
+            console.log(Math.floor(answers.classes[0].confidence * 100) + '%');
+
+            if (answers.top_class == 'food') {
+
+               var params = {
+                  'question' : userText
+               };
+
+               $.post('/parse', params)
+               .done(function onSucess(answer) {
+                  console.log(answer);
+                  buildMenu(answer);
+               });
+            } else if (answers.top_class == 'recommend') {
+               var params = {
+                  'question' : 'best'
+               };
+
+               $.post('/parse', params)
+               .done(function onSucess(answer) {
+                  console.log(answer);
+                  buildMenu(answer);
+               });
+            }
+            $chatInput.show();
+            $chatInput.focus();
+         })
+         .fail(function onError(error) {
+            console.log('classifier failed');
+         })
+         .always(function always(){
+            scrollChatToBottom();
+            $chatInput.focus();
+         });
+      }
    };
 
    var scrollChatToBottom = function() {
@@ -220,7 +237,32 @@ $(document).ready(function () {
       }, 300);
    };
 
+   var openMenu = function() {
+      var params = {
+         conversation_id: conversation_id,
+         client_id: client_id
+      };
+
+      $.post('/profile', params)
+      .done(function onSucess(data) {
+         data.name_values.forEach(function(par) {
+            if (!par.value !== '') {
+               if (par.name == 'menu_loaded' && par.value == 'true') {
+                  $(".expander").css({
+                     width: "1100px"
+                  });
+               } else if (par.name == 'menu_loaded') {
+                  $(".expander").css({
+                     width: "700px"
+                  });
+               }
+            }
+         });
+      });
+   };
+
    var talk = function(origin, text) {
+      openMenu();
       var d = new Date();
       var n = d.getTime();
       messages.push({incoming: origin, message: text, timestamp: n});
@@ -228,7 +270,7 @@ $(document).ready(function () {
       var html = '';
       for (var i = 0; i < messages.length; i++) {
          if (i == 0) {
-            html += '</br>';
+            // html += '</br>';
          }
          var message = messages[i];
 
@@ -267,15 +309,17 @@ $(document).ready(function () {
          // Calculate time gap.
          var largePC = (dateCurrent - datePrevious) > (60 * 1000);
          var largeCN = (dateNext - dateCurrent) > (60 * 1000);
-
+         var top = false;
          html += '<div class="clearfix">';
          if (!userCurrent && (userPrevious || largePC) && (!userNext && !largeCN)) {
             html += '<span class="bubble right rtop">' + messages[i].message + '</span>';
          } else if (!userCurrent && (!userPrevious && !largePC) && (!userNext && !largeCN)) {
             html += '<span class="bubble right rmiddle">' + messages[i].message + '</span>';
          } else if (!userCurrent && (!userPrevious && !largePC)) {
+            top = true;
             html += '<span class="bubble right rbottom">' + messages[i].message + '</span>';
          } else if (!userCurrent) {
+            top = true;
             html += '<span class="bubble right single">' + messages[i].message + '</span>';
          } else if ((!userPrevious || largePC) && (userNext && !largeCN)) {
             html += '<span class="bubble left ltop">' + messages[i].message + '</span>';
@@ -288,7 +332,13 @@ $(document).ready(function () {
          }
          html += '</div>';
          if (i == messages.length - 1) {
-            html += '</br>';
+            html += '<div class="clearfix">';
+            if (top) {
+               html += '<span style="height: 34px; display: inline-block;"></span>';
+            } else {
+               html += '<span style="height: 20px; display: inline-block;"></span>';
+            }
+            html += '</div>';
          }
       }
       $chatBox.html(html);
@@ -307,6 +357,10 @@ $(document).ready(function () {
    };
 
    // Initialize the conversation this could be done better
+   var $chatBox = $('#content');
+   var html = '<span style="height: 34px; display: inline-block;"></span>';
+   $chatBox.append(html);
+   loading();
    var params = { input : '' };
    if (conversation_id) {
       params.conversation_id = conversation_id;

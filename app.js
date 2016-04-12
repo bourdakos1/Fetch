@@ -70,7 +70,7 @@ var dialog_id_in_json = (function() {
 })();
 
 
-var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '3b88a0c9-fc66-462a-9ddd-fd1ff8168332';
+var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '8161943f-3321-4473-8b8e-f7bc7ac83ce2';
 
 // Create the service wrapper
 var dialog = watson.dialog(credentials);
