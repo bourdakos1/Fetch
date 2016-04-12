@@ -24,6 +24,7 @@ var conversation_id, client_id;
 var messages = new Array();
 var menu = false;
 var menu_data;
+var sub_total = 0;
 
 $(document).ready(function () {
    var loading = function() {
@@ -56,15 +57,16 @@ $(document).ready(function () {
          }
          menu = true;
          // Load the menu
+         $('.receipt_title').html(answer.name);
          var html = '';
          html += '<div class="menu header">';
          html +=	'  <img src="' + answer.logo + '" class="restaurant_logo">';
          html +=	'  <div class="menu restaurant_info">';
          html +=	'     <h1 class="menu">' + answer.name + '</h1>';
-         html +=	'     <div class="menu rating">'
-         html +=	'        <div class="rating-top" style="width: ' + answer.stars + 'em"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>'
-         html +=	'        <div class="rating-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>'
-         html +=	'     </div>'
+         html +=	'     <div class="menu rating">';
+         html +=	'        <div class="rating-top" style="width: ' + answer.stars + 'em"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>';
+         html +=	'        <div class="rating-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>';
+         html +=	'     </div>';
          html +=	'     <h4 class="menu reviews">' + answer.reviews + ' reviews</h4>';
          html +=	'  </div>';
          html += '</div>';
@@ -73,11 +75,11 @@ $(document).ready(function () {
                var section = answer.menus[k].sections[i];
                html += '<h2 class="menu">' + section.name + '</h2>';
                for (var j = 0; j < section.items.length; j++) {
-                  html += '<div class="menu item">'
-                  html += '  <div class="menu title">' + section.items[j].name + '</div><div class="menu price">$' + section.items[j].price + '</div>'
-                  html += '  <div style="clear:both; height: 8px"></div>'
-                  html += '  <h4 class="menu">' + section.items[j].description + '</h4>'
-                  html += '</div>'
+                  html += '<div class="menu item">';
+                  html += '  <div class="menu title">' + section.items[j].name + '</div><div class="menu price">$' + section.items[j].price + '</div>';
+                  html += '  <div style="clear:both; height: 8px"></div>';
+                  html += '  <h4 class="menu">' + section.items[j].description + '</h4>';
+                  html += '</div>';
                }
             }
          }
@@ -161,9 +163,27 @@ $(document).ready(function () {
             for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
                var section = menu_data.menus[k].sections[i];
                for (var j = 0; j < section.items.length; j++) {
-                  if (section.items[j].name == userText) {
+                  if (section.items[j].name.toLowerCase() == userText.toLowerCase()) {
                      console.log('One order of ' + userText);
-                     talk(true, '1 ' + userText + ', anything else?');
+                     talk(true, 'Anything else?');
+                     var html = '';
+                     html += '<div class="receipt_totals pad">' + section.items[j].name + '</div><div class="receipt_price pad">$' + section.items[j].price + '</div>';
+         				html += '<div style="clear:both;"></div>';
+                     $('.receipt_items').append(html);
+
+                     if (isNaN(parseFloat(section.items[j].price))) {
+                        sub_total += 0;
+                     } else {
+                        sub_total += parseFloat(section.items[j].price);
+                     }
+
+                     $('#subtotal').html('$' + sub_total.toFixed(2));
+                     $('#tax').html('$' + (sub_total * .07).toFixed(2));
+                     $('#delivery').html('$1.00');
+                     $('#tip').html('$' + (sub_total * .15).toFixed(2));
+                     $('#total').html('$' + (sub_total * 1.22 + 1).toFixed(2));
+
+                     openReceipt();
                      return;
                   }
                }
@@ -251,13 +271,29 @@ $(document).ready(function () {
                   $(".expander").css({
                      width: "1100px"
                   });
+                  if ($(".receipt_wrapper").width() < 1100) {
+                     $(".receipt_wrapper").css({
+                        width: "1100px"
+                     });
+                  }
                } else if (par.name == 'menu_loaded') {
                   $(".expander").css({
                      width: "700px"
                   });
+                  if ($(".receipt_wrapper").width() < 1100) {
+                     $(".receipt_wrapper").css({
+                        width: "1100px"
+                     });
+                  }
                }
             }
          });
+      });
+   };
+
+   var openReceipt = function() {
+      $(".receipt_wrapper").css({
+         width: "1376px"
       });
    };
 

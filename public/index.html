@@ -10,24 +10,43 @@
 <body>
 
 	<div id="red_header"></div>
-	<div class="expander">
-		<div class="wrapper">
-			<div id="title" class="controls">
-				<img src="/images/logo.png" style="width:28px; height:28px; vertical-align:middle" />
-  				<span style="margin-left:10px">Fetch</span>
+	<div class="receipt_wrapper">
+		<div class="receipt">
+			<div class="receipt_title">Pizza Hut</div>
+			<div class="receipt_items">
 			</div>
-			<div id="content">
-			</div>
-			<div class="controls">
-				<input type="text" placeholder="Type a message..." rows="1" id="field">
-			</div>
+			<div style="width: 100%; height: 1px; background: #9e9e9e; margin: 16px 0 8px 0;"></div>
+			<div class="receipt_totals sub">Subtotal</div><div id="subtotal" class="receipt_price sub">$10.00</div>
+			<div style="clear:both;"></div>
+			<div class="receipt_totals sub">Tax</div><div id="tax" class="receipt_price sub">$0.77</div>
+			<div style="clear:both;"></div>
+			<div class="receipt_totals sub">Delivery Charge</div><div id="delivery" class="receipt_price sub">$1.00</div>
+			<div style="clear:both;"></div>
+			<div class="receipt_totals sub">Tip</div><div id="tip" class="receipt_price sub">$1.77</div>
+			<div style="clear:both;"></div>
+			<div style="width: 100%; height: 1px; background: #9e9e9e; margin: 4px 0 16px 0;"></div>
+			<div class="receipt_totals total">TOTAL</div><div id="total" class="receipt_price total">$13.54</div>
+			<div style="clear:both;"></div>
 		</div>
-		<div class="menu_holder">
-			<div id="title" class="controls">
-				<img src="/images/logo.png" style="width:0px; height:28px; vertical-align:middle; visibility:hidden" />
-				Menu
+		<div class="expander">
+			<div class="wrapper">
+				<div id="title" class="controls">
+					<img src="/images/logo.png" style="width:28px; height:28px; vertical-align:middle" />
+	  				<span style="margin-left:10px">Fetch</span>
+				</div>
+				<div id="content">
+				</div>
+				<div class="controls">
+					<input type="text" placeholder="Type a message..." rows="1" id="field">
+				</div>
 			</div>
-			<div id="menu">
+			<div class="menu_holder">
+				<div id="title" class="controls">
+					<img src="/images/logo.png" style="width:0px; height:28px; vertical-align:middle; visibility:hidden" />
+					Menu
+				</div>
+				<div id="menu">
+				</div>
 			</div>
 		</div>
 	</div>
