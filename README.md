@@ -3,7 +3,7 @@
   A food delivery service that takes on a conversational interface.
 
 
-Give it a try! Click the button below.
+Give it a try! Click the link below.
 
 [Run Fetch](http://fetch.mybluemix.net)
 
