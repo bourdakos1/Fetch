@@ -24,7 +24,7 @@ keywords = json.loads(sys.argv[2])
 
 s = SequenceMatcher(None)
 
-limit = 0.60
+limit = 0.80
 
 matches = {}
 for keyword1 in keywords:
