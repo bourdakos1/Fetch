@@ -1,17 +1,9 @@
 /**
-* Copyright 2015 IBM Corp. All Rights Reserved.
+* Dear whoever has to read this,
 *
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+* I am so sorry you have to look through this mess
+* I promise I will clean all this up after the competion
+* I feel bad
 */
 
 /* global $:true */
@@ -27,6 +19,47 @@ var menu_data;
 var sub_total = 0;
 
 $(document).ready(function () {
+   var parseMessage = function(userText) {
+      $.post('/api/classify', {text: userText})
+      .done(function onSucess(answers){
+         loading();
+         $chatInput.val(''); // clear the text input
+         console.log(answers.top_class);
+         console.log(Math.floor(answers.classes[0].confidence * 100) + '%');
+
+         if (answers.top_class == 'food') {
+
+            var params = {
+               'question' : userText
+            };
+
+            $.post('/parse', params)
+            .done(function onSucess(answer) {
+               console.log(answer);
+               buildMenu(answer);
+            });
+         } else if (answers.top_class == 'recommend') {
+            var params = {
+               'question' : 'best'
+            };
+
+            $.post('/parse', params)
+            .done(function onSucess(answer) {
+               console.log(answer);
+               buildMenu(answer);
+            });
+         }
+         $chatInput.show();
+         $chatInput.focus();
+      })
+      .fail(function onError(error) {
+         console.log('classifier failed');
+      })
+      .always(function always(){
+         scrollChatToBottom();
+         $chatInput.focus();
+      });
+   }
    var loading = function() {
       var $chatBox = $('#content');
       var html = '';
@@ -203,50 +236,23 @@ $(document).ready(function () {
             client_id = dialog.conversation.client_id;
             console.log(dialog);
             var text = dialog.conversation.response.join('');
+            if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
+               parseMessage(userText);
+               menu = false;
+               return;
+            }
+            if (text == 'Hmmm... I didn\'t quite catch that.') {
+               talk(true,  'I can\'t find that on the menu');
+               talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+               // menu = false;
+               return;
+            }
             talk(true,  text);
          });
 
       // Classify
       } else {
-         $.post('/api/classify', {text: userText})
-         .done(function onSucess(answers){
-            loading();
-            $chatInput.val(''); // clear the text input
-            console.log(answers.top_class);
-            console.log(Math.floor(answers.classes[0].confidence * 100) + '%');
-
-            if (answers.top_class == 'food') {
-
-               var params = {
-                  'question' : userText
-               };
-
-               $.post('/parse', params)
-               .done(function onSucess(answer) {
-                  console.log(answer);
-                  buildMenu(answer);
-               });
-            } else if (answers.top_class == 'recommend') {
-               var params = {
-                  'question' : 'best'
-               };
-
-               $.post('/parse', params)
-               .done(function onSucess(answer) {
-                  console.log(answer);
-                  buildMenu(answer);
-               });
-            }
-            $chatInput.show();
-            $chatInput.focus();
-         })
-         .fail(function onError(error) {
-            console.log('classifier failed');
-         })
-         .always(function always(){
-            scrollChatToBottom();
-            $chatInput.focus();
-         });
+         parseMessage(userText);
       }
    };
 
