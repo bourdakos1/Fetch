@@ -35,12 +35,35 @@
                         <grammar>
                            <item>yes</item>
                            <item>yea</item>
-                           <item>yup</item>
+                           <item>yup$</item>
                            <item>sure</item>
                            <item>okay</item>
                            <item>yep</item>
-                           <item>yepp</item>
+                           <item>k</item>
+                           <item>fine</item>
+                           <item>okay</item>
+                           <item>ok</item>
+                           <item>kay</item>
+                           <item>yes$</item>
+                           <item>yea$</item>
+                           <item>yup$</item>
+                           <item>sure$</item>
+                           <item>okay$</item>
+                           <item>yep$</item>
+                           <item>k$</item>
+                           <item>fine$</item>
+                           <item>okay$</item>
+                           <item>ok$</item>
+                           <item>kay$</item>
+                           <item>yes plz</item>
                            <item>yes please</item>
+                           <item>yes pls</item>
+                           <item>yes * plz</item>
+                           <item>yes * please</item>
+                           <item>yes * pls</item>
+                           <item>yes, plz</item>
+                           <item>yes, please</item>
+                           <item>yes, pls</item>
                         </grammar>
                         <output>
                            <action varName="menu_loaded" operator="SET_TO">true</action>
@@ -69,12 +92,36 @@
                         <grammar>
                            <item>yes</item>
                            <item>yea</item>
-                           <item>yup</item>
+                           <item>yup$</item>
                            <item>sure</item>
                            <item>okay</item>
                            <item>yep</item>
-                           <item>yepp</item>
+                           <item>k</item>
+                           <item>fine</item>
+                           <item>okay</item>
+                           <item>ok</item>
+                           <item>kay</item>
+                           <item>yes$</item>
+                           <item>yes$</item>
+                           <item>yea$</item>
+                           <item>yup$</item>
+                           <item>sure$</item>
+                           <item>okay$</item>
+                           <item>yep$</item>
+                           <item>k$</item>
+                           <item>fine$</item>
+                           <item>okay$</item>
+                           <item>ok$</item>
+                           <item>kay$</item>
+                           <item>yes plz</item>
                            <item>yes please</item>
+                           <item>yes pls</item>
+                           <item>yes * plz</item>
+                           <item>yes * please</item>
+                           <item>yes * pls</item>
+                           <item>yes, plz</item>
+                           <item>yes, please</item>
+                           <item>yes, pls</item>
                         </grammar>
                         <output>
                            <action varName="menu_loaded" operator="SET_TO">true</action>

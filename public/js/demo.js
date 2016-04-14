@@ -4,6 +4,10 @@
 * I am so sorry you have to look through this mess
 * I promise I will clean all this up after the competion
 * I feel bad
+*
+* This is very poorly commented
+* Again, I appologize
+*
 */
 
 /* global $:true */
@@ -48,6 +52,8 @@ $(document).ready(function () {
                console.log(answer);
                buildMenu(answer);
             });
+         } else {
+            talk(true,  "What would you like to eat?");
          }
          $chatInput.show();
          $chatInput.focus();
@@ -223,7 +229,9 @@ $(document).ready(function () {
             }
          }
 
-         var params = { input : userText };
+         var newText = userText.replace(/[^\w\s]|(.)(?=\1)/gi, "");
+
+         var params = { input : newText };
 
          if (conversation_id) {
             params.conversation_id = conversation_id;
@@ -237,14 +245,13 @@ $(document).ready(function () {
             console.log(dialog);
             var text = dialog.conversation.response.join('');
             if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
-               parseMessage(userText);
-               menu = false;
+               talk(true,  'I can\'t find that on the menu');
+               talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
                return;
             }
             if (text == 'Hmmm... I didn\'t quite catch that.') {
                talk(true,  'I can\'t find that on the menu');
                talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
-               // menu = false;
                return;
             }
             talk(true,  text);

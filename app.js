@@ -39,7 +39,7 @@ var nlClassifier = watson.natural_language_classifier({
 
 app.post('/api/classify', function(req, res, next) {
   var params = {
-    classifier: process.env.CLASSIFIER_ID || 'f15e67x54-nlc-879', // pre-trained classifier
+    classifier: process.env.CLASSIFIER_ID || 'f1704ex55-nlc-4205', // pre-trained classifier
     text: req.body.text
   };
 
@@ -70,7 +70,7 @@ var dialog_id_in_json = (function() {
 })();
 
 
-var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '8161943f-3321-4473-8b8e-f7bc7ac83ce2';
+var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '03414c0f-1244-4223-a7bd-51bff6f6c370';
 
 // Create the service wrapper
 var dialog = watson.dialog(credentials);
