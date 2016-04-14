@@ -112,6 +112,25 @@ app.post('/parse', function(req, res) {
    });
 });
 
+// This is silly, merge this eventually
+app.post('/wordcomp', function(req, res) {
+   var subject = req.body.subject;
+   var menu_items = JSON.stringify(req.body.menu_items);
+   var python_script = spawn('python3', ['word_comp.py', subject, menu_items]);
+   python_script.stdout.on('data', function(data) {
+      res.send(data);
+      console.log('stdout: ' + data);
+   });
+
+   python_script.stderr.on('data', function (data) {
+      console.log('stderr: ' + data);
+   });
+
+   python_script.on('close', function (code) {
+      console.log('child process exited with code ' + code);
+   });
+});
+
 // This is pretty bad
 // Create an actual python server for this after the competition
 global.data = '';

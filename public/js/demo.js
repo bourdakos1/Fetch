@@ -213,67 +213,90 @@ $(document).ready(function () {
 
       // If the menu is open, take orders, no need to classify
       if (menu) {
+         loading();
 
+         var items = [];
          for (var k = 0; k < menu_data.menus.length; k++) {
             for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
                var section = menu_data.menus[k].sections[i];
                for (var j = 0; j < section.items.length; j++) {
-                  if (section.items[j].name.toLowerCase() == userText.toLowerCase()) {
-                     console.log('One order of ' + userText);
-                     talk(true, 'Anything else?');
-                     var html = '';
-                     html += '<div class="receipt_totals pad">' + section.items[j].name + '</div><div class="receipt_price pad">$' + section.items[j].price + '</div>';
-         				html += '<div style="clear:both;"></div>';
-                     $('.receipt_items').append(html);
-
-                     if (isNaN(parseFloat(section.items[j].price))) {
-                        sub_total += 0;
-                     } else {
-                        sub_total += parseFloat(section.items[j].price);
-                     }
-
-                     $('#subtotal').html('$' + sub_total.toFixed(2));
-                     $('#tax').html('$' + (sub_total * .07).toFixed(2));
-                     $('#delivery').html('$1.00');
-                     $('#tip').html('$' + (sub_total * .15).toFixed(2));
-                     $('#total').html('$' + (sub_total * 1.22 + 1).toFixed(2));
-
-                     openReceipt();
-                     return;
-                  }
+                  items.push(section.items[j].name);
                }
             }
          }
 
-         var newText = userText.replace(/[^\w\s]|(.)(?=\1)/gi, "");
+         var params = {
+            'subject' : userText,
+            'menu_items' : items
+         };
 
-         var params = { input : newText };
+         $.post('/wordcomp', params)
+         .done(function onSucess(answer) {
+            console.log(answer);
 
-         if (conversation_id) {
-            params.conversation_id = conversation_id;
-            params.client_id = client_id;
-         }
+            for (var k = 0; k < menu_data.menus.length; k++) {
+               for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
+                  var section = menu_data.menus[k].sections[i];
+                  for (var j = 0; j < section.items.length; j++) {
+                     items[section.items[j].name] = section.items[j].price;
+                     // console.log(section.items[j].name.toLowerCase() + ' == ' + answer.toLowerCase());
+                     if (section.items[j].name.replace(/(\r\n|\n|\r)/gm,'').toLowerCase() == answer.replace(/(\r\n|\n|\r)/gm,'').toLowerCase()) {
+                        console.log('One order of ' + userText);
+                        var html = '';
+                        html += '<div class="receipt_totals pad">' + section.items[j].name + '</div><div class="receipt_price pad">$' + section.items[j].price + '</div>';
+                        html += '<div style="clear:both;"></div>';
+                        $('.receipt_items').append(html);
 
-         $.post('/conversation', params)
-         .done(function onSucess(dialog) {
-            conversation_id = dialog.conversation.conversation_id;
-            client_id = dialog.conversation.client_id;
-            console.log(dialog);
-            var text = dialog.conversation.response.join('');
-            if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
-               talk(true,  'I can\'t find that on the menu');
-               talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
-               return;
+                        if (isNaN(parseFloat(section.items[j].price))) {
+                           sub_total += 0;
+                        } else {
+                           sub_total += parseFloat(section.items[j].price);
+                        }
+
+                        $('#subtotal').html('$' + sub_total.toFixed(2));
+                        $('#tax').html('$' + (sub_total * .07).toFixed(2));
+                        $('#delivery').html('$1.00');
+                        $('#tip').html('$' + (sub_total * .15).toFixed(2));
+                        $('#total').html('$' + (sub_total * 1.22 + 1).toFixed(2));
+
+                        talk(true, 'Anything else?');
+                        openReceipt();
+                        return;
+                     }
+                  }
+               }
             }
-            if (text == 'Hmmm... I didn\'t quite catch that.') {
-               talk(true,  'I can\'t find that on the menu');
-               talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
-               return;
+
+            var newText = userText.replace(/[^\w\s]|(.)(?=\1)/gi, "");
+
+            var params = { input : newText };
+            
+            if (conversation_id) {
+               params.conversation_id = conversation_id;
+               params.client_id = client_id;
             }
-            talk(true,  text);
+
+            $.post('/conversation', params)
+            .done(function onSucess(dialog) {
+               conversation_id = dialog.conversation.conversation_id;
+               client_id = dialog.conversation.client_id;
+               console.log(dialog);
+               var text = dialog.conversation.response.join('');
+               if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
+                  talk(true,  'I can\'t find that on the menu');
+                  talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  return;
+               }
+               if (text == 'Hmmm... I didn\'t quite catch that.') {
+                  talk(true,  'I can\'t find that on the menu');
+                  talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  return;
+               }
+               talk(true,  text);
+            });
          });
 
-      // Classify
+         // Classify
       } else {
          parseMessage(userText);
       }
