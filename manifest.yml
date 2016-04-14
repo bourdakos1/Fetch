@@ -5,10 +5,10 @@ declared-services:
 applications:
 - services:
   - dialog-service
-  name: fetch-test
+  name: fetch
   command: node app.js
   path: .
   memory: 512M
   env:
     NODE_ENV: production
-  host: fetch-test
+  host: fetch
