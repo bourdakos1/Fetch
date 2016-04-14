@@ -5,7 +5,7 @@
 
 Give it a try! Click the button below.
 
-[![Run Fetch](http://fetch.mybluemix.net)]
+[Run Fetch](http://fetch.mybluemix.net)
 
 ## License
 
