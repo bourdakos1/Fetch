@@ -270,7 +270,7 @@ $(document).ready(function () {
             var newText = userText.replace(/[^\w\s]|(.)(?=\1)/gi, "");
 
             var params = { input : newText };
-            
+
             if (conversation_id) {
                params.conversation_id = conversation_id;
                params.client_id = client_id;
@@ -284,12 +284,12 @@ $(document).ready(function () {
                var text = dialog.conversation.response.join('');
                if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
                   talk(true,  'I can\'t find that on the menu');
-                  talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
                   return;
                }
                if (text == 'Hmmm... I didn\'t quite catch that.') {
                   talk(true,  'I can\'t find that on the menu');
-                  talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
                   return;
                }
                talk(true,  text);
