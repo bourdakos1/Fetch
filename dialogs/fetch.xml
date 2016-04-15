@@ -35,7 +35,7 @@
                         <grammar>
                            <item>yes</item>
                            <item>yea</item>
-                           <item>yup$</item>
+                           <item>yup</item>
                            <item>sure</item>
                            <item>okay</item>
                            <item>yep</item>
@@ -72,6 +72,43 @@
                                  Okay, here's the menu!
                               </item>
                            </prompt>
+                           <getUserInput>
+                              <input>
+                                 <grammar>
+                                    <item>no</item>
+                                    <item>no thanks</item>
+                                    <item>no tnx</item>
+                                    <item>nah</item>
+                                    <item>no thx</item>
+                                    <item>no thnks</item>
+                                    <item>no thnx</item>
+                                    <item>nope</item>
+                                    <item>no$</item>
+                                    <item>no thanks$</item>
+                                    <item>no tnx$</item>
+                                    <item>nah$</item>
+                                    <item>no thx$</item>
+                                    <item>no thnks$</item>
+                                    <item>no thnx$</item>
+                                    <item>nope$</item>
+                                    <item>nope thats it</item>
+                                    <item>nope, that’s it</item>
+                                    <item>nope that’s it</item>
+                                    <item>thats it</item>
+                                    <item>that’s it</item>
+                                    <item>that is it</item>
+                                    <item>nope that is it</item>
+                                    <item>nope, that is it</item>
+                                 </grammar>
+                                 <output>
+                                    <prompt selectionType="RANDOM">
+                                       <item>
+                                          Thank you! Delivery hasn't been added yet, but it will be soon!
+                                       </item>
+                                    </prompt>
+                                 </output>
+                              </input>
+                           </getUserInput>
                         </output>
                      </input>
                   </getUserInput>
@@ -92,7 +129,7 @@
                         <grammar>
                            <item>yes</item>
                            <item>yea</item>
-                           <item>yup$</item>
+                           <item>yup</item>
                            <item>sure</item>
                            <item>okay</item>
                            <item>yep</item>
@@ -130,6 +167,43 @@
                                  Okay, here's the menu!
                               </item>
                            </prompt>
+                           <getUserInput>
+                              <input>
+                                 <grammar>
+                                    <item>no</item>
+                                    <item>no thanks</item>
+                                    <item>no tnx</item>
+                                    <item>nah</item>
+                                    <item>no thx</item>
+                                    <item>no thnks</item>
+                                    <item>no thnx</item>
+                                    <item>nope</item>
+                                    <item>no$</item>
+                                    <item>no thanks$</item>
+                                    <item>no tnx$</item>
+                                    <item>nah$</item>
+                                    <item>no thx$</item>
+                                    <item>no thnks$</item>
+                                    <item>no thnx$</item>
+                                    <item>nope$</item>
+                                    <item>nope thats it</item>
+                                    <item>nope, that’s it</item>
+                                    <item>nope that’s it</item>
+                                    <item>thats it</item>
+                                    <item>that’s it</item>
+                                    <item>that is it</item>
+                                    <item>nope that is it</item>
+                                    <item>nope, that is it</item>
+                                 </grammar>
+                                 <output>
+                                    <prompt selectionType="RANDOM">
+                                       <item>
+                                          Thank you! Delivery hasn't been added yet, but it will be soon!
+                                       </item>
+                                    </prompt>
+                                 </output>
+                              </input>
+                           </getUserInput>
                         </output>
                      </input>
                   </getUserInput>
@@ -144,6 +218,43 @@
                   <prompt selectionType="RANDOM">
                      <item>Sure here's the menu!</item>
                   </prompt>
+                  <getUserInput>
+                     <input>
+                        <grammar>
+                           <item>no</item>
+                           <item>no thanks</item>
+                           <item>no tnx</item>
+                           <item>nah</item>
+                           <item>no thx</item>
+                           <item>no thnks</item>
+                           <item>no thnx</item>
+                           <item>nope</item>
+                           <item>no$</item>
+                           <item>no thanks$</item>
+                           <item>no tnx$</item>
+                           <item>nah$</item>
+                           <item>no thx$</item>
+                           <item>no thnks$</item>
+                           <item>no thnx$</item>
+                           <item>nope$</item>
+                           <item>nope thats it</item>
+                           <item>nope, that’s it</item>
+                           <item>nope that’s it</item>
+                           <item>thats it</item>
+                           <item>that’s it</item>
+                           <item>that is it</item>
+                           <item>nope that is it</item>
+                           <item>nope, that is it</item>
+                        </grammar>
+                        <output>
+                           <prompt selectionType="RANDOM">
+                              <item>
+                                 Thank you! Delivery hasn't been added yet, but it will be soon!
+                              </item>
+                           </prompt>
+                        </output>
+                     </input>
+                  </getUserInput>
                </output>
             </input>
          </folder>

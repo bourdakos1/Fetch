@@ -37,6 +37,7 @@ var messages = new Array();
 var menu = false;
 var menu_data;
 var sub_total = 0;
+var game_over = false;
 
 $(document).ready(function () {
    var parseMessage = function(userText) {
@@ -206,10 +207,14 @@ $(document).ready(function () {
    });
 
    var converse = function(userText) {
-
       // check if the user typed text or not
       if (typeof(userText) !== undefined && $.trim(userText) !== '')
       submitMessage(userText);
+
+      if (game_over) {
+         talk(true, 'Refresh the page to restart');
+         return;
+      }
 
       // If the menu is open, take orders, no need to classify
       if (menu) {
@@ -282,6 +287,9 @@ $(document).ready(function () {
                client_id = dialog.conversation.client_id;
                console.log(dialog);
                var text = dialog.conversation.response.join('');
+               if (text == 'Thank you! Delivery hasn\'t been added yet, but it will be soon!') {
+                  game_over = true;
+               }
                if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
                   talk(true,  'I can\'t find that on the menu');
                   // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
