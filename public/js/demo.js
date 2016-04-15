@@ -295,7 +295,7 @@ $(document).ready(function () {
                   // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
                   return;
                }
-               if (text == 'Hmmm... I didn\'t quite catch that.') {
+               if (text == 'Hmmm... I didn\'t quite catch that.Okay, here\'s the menu!') {
                   talk(true,  'I can\'t find that on the menu');
                   // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
                   return;
