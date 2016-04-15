@@ -208,7 +208,10 @@ $(document).ready(function () {
 
    var converse = function(userText) {
       // check if the user typed text or not
-      if (typeof(userText) !== undefined && $.trim(userText) !== '')
+      if (typeof(userText) == undefined || $.trim(userText) == '') {
+         return;
+      }
+
       submitMessage(userText);
 
       if (game_over) {
@@ -292,12 +295,20 @@ $(document).ready(function () {
                }
                if (text == 'Hmmm... I didn\'t quite catch that.Have you tried [restaurant]? They have pretty good [subject]!') {
                   talk(true,  'I can\'t find that on the menu');
-                  // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  talk(true,  'Say "yes" if you would like to see the menu');
                   return;
                }
                if (text == 'Hmmm... I didn\'t quite catch that.Okay, here\'s the menu!') {
                   talk(true,  'I can\'t find that on the menu');
-                  // talk(true,  '(please refresh the page to find a new restaurant - this will be fixed soon)');
+                  return;
+               }
+               if (text == 'Hmmm... I didn\'t quite catch that.Would you like to try [restaurant]?') {
+                  talk(true,  'I can\'t find that on the menu');
+                  talk(true,  'Say "yes" if you would like to see the menu');
+                  return;
+               }
+               if (text == 'Hmmm... I didn\'t quite catch that.Sure here\'s the menu!') {
+                  talk(true,  'I can\'t find that on the menu');
                   return;
                }
                talk(true,  text);

@@ -21,8 +21,6 @@ from difflib import SequenceMatcher
 
 sentence = sys.argv[1].lower()
 
-print(sys.argv[2])
-
 if sys.argv[2] is None:
     print('')
 
