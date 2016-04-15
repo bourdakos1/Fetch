@@ -45,8 +45,6 @@ $(document).ready(function () {
       .done(function onSucess(answers){
          loading();
          $chatInput.val(''); // clear the text input
-         console.log(answers.top_class);
-         console.log(Math.floor(answers.classes[0].confidence * 100) + '%');
 
          if (answers.top_class == 'food') {
 
@@ -56,7 +54,6 @@ $(document).ready(function () {
 
             $.post('/parse', params)
             .done(function onSucess(answer) {
-               console.log(answer);
                buildMenu(answer);
             });
          } else if (answers.top_class == 'recommend') {
@@ -66,7 +63,6 @@ $(document).ready(function () {
 
             $.post('/parse', params)
             .done(function onSucess(answer) {
-               console.log(answer);
                buildMenu(answer);
             });
          } else {
@@ -103,7 +99,6 @@ $(document).ready(function () {
 
       $.post('/menu', params)
       .done(function onSucess(answer) {
-         console.log('parsing');
          answer = $.parseJSON(answer);
          menu_data = answer;
          if (answer.name == undefined) {
@@ -168,7 +163,6 @@ $(document).ready(function () {
          .done(function onSucess(dialog) {
             conversation_id = dialog.conversation.conversation_id;
             client_id = dialog.conversation.client_id;
-            console.log(dialog);
             var text = dialog.conversation.response.join('');
             text = text.replace("[restaurant]", answer.name);
             text = text.replace("[subject]", subject.replace(/(\r\n|\n|\r)/gm,''));
@@ -233,47 +227,47 @@ $(document).ready(function () {
             }
          }
 
-         var params = {
-            'subject' : userText,
-            'menu_items' : items
-         };
+         if (items.length == 0) {
+            items.push("NO MENU");
+         }
+            var params = {
+               'subject' : userText,
+               'menu_items' : items
+            };
 
-         $.post('/wordcomp', params)
-         .done(function onSucess(answer) {
-            console.log(answer);
+            $.post('/wordcomp', params)
+            .done(function onSucess(answer) {
 
-            for (var k = 0; k < menu_data.menus.length; k++) {
-               for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
-                  var section = menu_data.menus[k].sections[i];
-                  for (var j = 0; j < section.items.length; j++) {
-                     items[section.items[j].name] = section.items[j].price;
-                     // console.log(section.items[j].name.toLowerCase() + ' == ' + answer.toLowerCase());
-                     if (section.items[j].name.replace(/(\r\n|\n|\r)/gm,'').toLowerCase() == answer.replace(/(\r\n|\n|\r)/gm,'').toLowerCase()) {
-                        console.log('One order of ' + userText);
-                        var html = '';
-                        html += '<div class="receipt_totals pad">' + section.items[j].name + '</div><div class="receipt_price pad">$' + section.items[j].price + '</div>';
-                        html += '<div style="clear:both;"></div>';
-                        $('.receipt_items').append(html);
+               for (var k = 0; k < menu_data.menus.length; k++) {
+                  for (var i = 0; i < menu_data.menus[k].sections.length; i++) {
+                     var section = menu_data.menus[k].sections[i];
+                     for (var j = 0; j < section.items.length; j++) {
+                        items[section.items[j].name] = section.items[j].price;
+                        if (section.items[j].name.replace(/(\r\n|\n|\r)/gm,'').toLowerCase() == answer.replace(/(\r\n|\n|\r)/gm,'').toLowerCase()) {
+                           var html = '';
+                           html += '<div class="receipt_totals pad">' + section.items[j].name + '</div><div class="receipt_price pad">$' + section.items[j].price + '</div>';
+                           html += '<div style="clear:both;"></div>';
+                           $('.receipt_items').append(html);
 
-                        if (isNaN(parseFloat(section.items[j].price))) {
-                           sub_total += 0;
-                        } else {
-                           sub_total += parseFloat(section.items[j].price);
+                           if (isNaN(parseFloat(section.items[j].price))) {
+                              sub_total += 0;
+                           } else {
+                              sub_total += parseFloat(section.items[j].price);
+                           }
+
+                           $('#subtotal').html('$' + sub_total.toFixed(2));
+                           $('#tax').html('$' + (sub_total * .07).toFixed(2));
+                           $('#delivery').html('$1.00');
+                           $('#tip').html('$' + (sub_total * .15).toFixed(2));
+                           $('#total').html('$' + (sub_total * 1.22 + 1).toFixed(2));
+
+                           talk(true, 'Anything else?');
+                           openReceipt();
+                           return;
                         }
-
-                        $('#subtotal').html('$' + sub_total.toFixed(2));
-                        $('#tax').html('$' + (sub_total * .07).toFixed(2));
-                        $('#delivery').html('$1.00');
-                        $('#tip').html('$' + (sub_total * .15).toFixed(2));
-                        $('#total').html('$' + (sub_total * 1.22 + 1).toFixed(2));
-
-                        talk(true, 'Anything else?');
-                        openReceipt();
-                        return;
                      }
                   }
                }
-            }
 
             var newText = userText.replace(/[^\w\s]|(.)(?=\1)/gi, "");
 
@@ -288,7 +282,6 @@ $(document).ready(function () {
             .done(function onSucess(dialog) {
                conversation_id = dialog.conversation.conversation_id;
                client_id = dialog.conversation.client_id;
-               console.log(dialog);
                var text = dialog.conversation.response.join('');
                if (text == 'Thank you! Delivery hasn\'t been added yet, but it will be soon!') {
                   game_over = true;
@@ -477,7 +470,6 @@ $(document).ready(function () {
    .done(function onSucess(dialog) {
       conversation_id = dialog.conversation.conversation_id;
       client_id = dialog.conversation.client_id;
-      console.log(dialog);
       talk(true, dialog.conversation.response.join(''));
    });
 

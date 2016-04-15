@@ -20,10 +20,6 @@ from difflib import SequenceMatcher
 # This is probably overkill, but it shouldnt be too bad
 
 sentence = sys.argv[1].lower()
-
-if sys.argv[2] is None:
-    print('')
-
 keywords = json.loads(sys.argv[2])
 
 s = SequenceMatcher(None)

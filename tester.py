@@ -78,10 +78,6 @@ for result in results:
             if cat.name.lower() == exp_answer:
                 category = cat.name.lower()
 
-    # print (repr(exp_answer)+ ': ' + repr(answer) + '\n')
-    # print (repr(exp_name)+ ': ' + repr(name) + '\n')
-    # print (repr(exp_answer)+ ': ' + repr(category) + '\n')
-
     if exp_name == name or category == exp_answer:
         true_count += 1
     else:
