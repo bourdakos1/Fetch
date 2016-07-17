@@ -19,10 +19,10 @@ from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 
 auth = Oauth1Authenticator(
-    consumer_key='replace_with_key',
-    consumer_secret='replace_with_key',
-    token='replace_with_key',
-    token_secret='replace_with_key'
+    consumer_key='LXzlm4Bdo4UL0CWDJ9sqzw',
+    consumer_secret='ZuqOH9TviTuklof62f_rDV1E6zA',
+    token='86R1fHmZwGXY1D0zSqlL8jb7wm7PQ7fg',
+    token_secret='s1iD6vAWs84NSPazsC5_s24HhWs'
 )
 
 client = Client(auth)

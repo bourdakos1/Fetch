@@ -31,15 +31,15 @@ require('./config/express')(app);
 // Create the service wrapper
 var nlClassifier = watson.natural_language_classifier({
   url : 'https://gateway.watsonplatform.net/natural-language-classifier/api',
-  username : 'replace_with_username',
-  password : 'replace_with_password',
+  username : '334f40b3-0dc3-4ebf-83c0-42f861d7b23c',
+  password : 'CD0Tg9AnyEqv',
   version  : 'v1'
 
 });
 
 app.post('/api/classify', function(req, res, next) {
   var params = {
-    classifier: process.env.CLASSIFIER_ID || 'replace_with_key', // pre-trained classifier
+    classifier: process.env.CLASSIFIER_ID || 'f1704ex55-nlc-4205', // pre-trained classifier
     text: req.body.text
   };
 
@@ -54,8 +54,8 @@ app.post('/api/classify', function(req, res, next) {
 // if bluemix credentials exists, then override local
 var credentials =  extend({
    url: 'https://gateway.watsonplatform.net/dialog/api',
-   username: 'replace_with_username',
-   password: 'replace_with_password',
+   username: '089907cc-dc03-4e1b-b58c-4c22fb5d4042',
+   password: 'S3JRhYSRB9ue',
    version: 'v1'
 }, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
 
@@ -70,7 +70,7 @@ var dialog_id_in_json = (function() {
 })();
 
 
-var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || 'replace_with_key';
+var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '06492d94-0eba-4c0f-9c52-c5a07146b3d1';
 
 // Create the service wrapper
 var dialog = watson.dialog(credentials);

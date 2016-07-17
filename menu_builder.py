@@ -21,10 +21,10 @@ from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 
 auth = Oauth1Authenticator(
-    consumer_key='replace_with_key',
-    consumer_secret='replace_with_key',
-    token='replace_with_key',
-    token_secret='replace_with_key'
+    consumer_key='LXzlm4Bdo4UL0CWDJ9sqzw',
+    consumer_secret='ZuqOH9TviTuklof62f_rDV1E6zA',
+    token='86R1fHmZwGXY1D0zSqlL8jb7wm7PQ7fg',
+    token_secret='s1iD6vAWs84NSPazsC5_s24HhWs'
 )
 
 client = Client(auth)
@@ -80,9 +80,9 @@ for business in businesses:
 
         name = quote(business.name)
 
-        locu_key = 'replace_with_key'
-        foursquare_id = 'replace_with_key'
-        foursquare_secret = 'replace_with_key'
+        locu_key = '705dd0bae9197fd1ea36912f49473722092639c4'
+        foursquare_id = 'YGL0AT5G1Y3NDAD34DUWL5RV00SDLGZHSS0YSLG24TDHZBWH'
+        foursquare_secret = 'TSKVWGPB2PBR34XZ0WC3RT50YZH1SUZUARUXAV2YFMPFURZS'
         foursquare_key = 'client_id='+ foursquare_id + '&client_secret=' + foursquare_secret + '&v=20160405'
 
         # Locu
