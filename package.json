@@ -15,6 +15,6 @@
     "errorhandler": "~1.4.1",
     "express": "~4.13.3",
     "request": "^2.67.0",
-    "watson-developer-cloud": "~1.0.6"
+    "watson-developer-cloud": "^1.12.2"
   }
 }

@@ -1,10 +1,10 @@
 declared-services:
-  dialog-service:
-    label: dialog
+  conversation-service:
+    label: conversation
     plan: standard
 applications:
 - services:
-  - dialog-service
+  - Conversation-yh
   name: fetch
   command: node app.js
   path: .

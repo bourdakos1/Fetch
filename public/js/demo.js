@@ -14,39 +14,30 @@
 * limitations under the License.
 */
 
-/**
-* Dear whoever has to read this,
-*
-* I am so sorry you have to look through this mess
-* I promise I will clean all this up after the competion
-* I feel bad
-*
-* This is very poorly commented
-* Again, I appologize
-*
-*/
-
 /* global $:true */
 
 'use strict';
 
 // conversation variables
-var context = '/proxy/api';
-var conversation_id, client_id;
+var context = null;
 var messages = new Array();
-var menu = false;
+var menu_open = false;
 var menu_data;
 var sub_total = 0;
 var game_over = false;
 
 $(document).ready(function () {
    var parseMessage = function(userText) {
-      $.post('/api/classify', {text: userText})
-      .done(function onSucess(answers){
+      var text = { 'text' : userText };
+      var fake = { 'question' : text, 'context' : context };
+      $.post('/api/message', fake)
+      .done(function onSucess(dialog) {
          loading();
-         $chatInput.val(''); // clear the text input
+         $chatInput.val('');
 
-         if (answers.top_class == 'food') {
+         context = dialog.context;
+
+         if (dialog.intents[0].intent == 'food') {
 
             var params = {
                'question' : userText
@@ -54,31 +45,29 @@ $(document).ready(function () {
 
             $.post('/parse', params)
             .done(function onSucess(answer) {
-               buildMenu(answer);
+               buildMenu(answer, dialog);
             });
-         } else if (answers.top_class == 'recommend') {
+         } else if (dialog.intents[0].intent == 'recommend') {
             var params = {
                'question' : 'best'
             };
 
             $.post('/parse', params)
             .done(function onSucess(answer) {
-               buildMenu(answer);
+               buildMenu(answer, dialog);
             });
+         } else if (dialog.intents[0].intent == 'yes') {
+            openMenu();
+            talk(true, dialog.output.text);
          } else {
-            talk(true,  "What would you like to eat?");
+            talk(true, dialog.output.text);
          }
-         $chatInput.show();
-         $chatInput.focus();
-      })
-      .fail(function onError(error) {
-         console.log('classifier failed');
-      })
-      .always(function always(){
+      }).always(function always(){
          scrollChatToBottom();
          $chatInput.focus();
       });
    }
+
    var loading = function() {
       var $chatBox = $('#content');
       var html = '';
@@ -92,7 +81,8 @@ $(document).ready(function () {
       html += '</br>';
       $chatBox.append(html);
    }
-   var buildMenu = function(subject) {
+
+   var buildMenu = function(subject, dialog) {
       var params = {
          'subject' : subject
       };
@@ -103,10 +93,9 @@ $(document).ready(function () {
          menu_data = answer;
          if (answer.name == undefined) {
             talk(true, 'Sorry, I dont understand');
-            menu = false;
             return;
          }
-         menu = true;
+
          // Load the menu
          $('.receipt_title').html(answer.name);
          var html = '';
@@ -136,41 +125,25 @@ $(document).ready(function () {
          }
          $('#menu').html(html);
 
-         // This is a bad name, I should change it to something else
-         var openMenu = false;
-
          // Check if its a restaurant or a food item
          if (answer.name.toLowerCase() == subject.replace(/(\r\n|\n|\r)/gm,'').toLowerCase()) {
             var params = { input : 'restaurant' };
-            openMenu = true;
+            openMenu();
          } else if (subject.replace(/(\r\n|\n|\r)/gm,'').toLowerCase() == 'best') {
-            openMenu = true;
+            openMenu();
             var params = { input : 'recommend' };
          } else {
             var params = { input : 'subject' };
             talk(true,  "hmmmm");
             loading();
          }
-
-         // check if there is a conversation in place and continue that
-         // by specifing the conversation_id and client_id
-         if (conversation_id) {
-            params.conversation_id = conversation_id;
-            params.client_id = client_id;
+         var text = dialog.output.text.join('');
+         text = text.replace("[restaurant]", answer.name);
+         text = text.replace("[subject]", subject.replace(/(\r\n|\n|\r)/gm,''));
+         talk(true,  text);
+         if (!menu_open) {
+            talk(true,  "Would you like to see the menu?");
          }
-
-         $.post('/conversation', params)
-         .done(function onSucess(dialog) {
-            conversation_id = dialog.conversation.conversation_id;
-            client_id = dialog.conversation.client_id;
-            var text = dialog.conversation.response.join('');
-            text = text.replace("[restaurant]", answer.name);
-            text = text.replace("[subject]", subject.replace(/(\r\n|\n|\r)/gm,''));
-            talk(true,  text);
-            if (!openMenu) {
-               talk(true,  "Would you like to see the menu?");
-            }
-         });
       });
    };
 
@@ -206,15 +179,17 @@ $(document).ready(function () {
          return;
       }
 
+      // Display the users message to the screen
       submitMessage(userText);
 
+      // If the order is done ask them to refresh
       if (game_over) {
          talk(true, 'Refresh the page to restart');
          return;
       }
 
       // If the menu is open, take orders, no need to classify
-      if (menu) {
+      if (menu_open) {
          loading();
 
          var items = [];
@@ -273,16 +248,11 @@ $(document).ready(function () {
 
             var params = { input : newText };
 
-            if (conversation_id) {
-               params.conversation_id = conversation_id;
-               params.client_id = client_id;
-            }
-
-            $.post('/conversation', params)
+            var text = { 'text' : newText };
+            var fake = { 'question' : text, 'context' : context };
+            $.post('/api/message', fake)
             .done(function onSucess(dialog) {
-               conversation_id = dialog.conversation.conversation_id;
-               client_id = dialog.conversation.client_id;
-               var text = dialog.conversation.response.join('');
+               var text = dialog.output.text.join('');
                if (text == 'Thank you! Delivery hasn\'t been added yet, but it will be soon!') {
                   game_over = true;
                }
@@ -322,37 +292,15 @@ $(document).ready(function () {
    };
 
    var openMenu = function() {
-      var params = {
-         conversation_id: conversation_id,
-         client_id: client_id
-      };
-
-      $.post('/profile', params)
-      .done(function onSucess(data) {
-         data.name_values.forEach(function(par) {
-            if (!par.value !== '') {
-               if (par.name == 'menu_loaded' && par.value == 'true') {
-                  $(".expander").css({
-                     width: "1100px"
-                  });
-                  if ($(".receipt_wrapper").width() < 1100) {
-                     $(".receipt_wrapper").css({
-                        width: "1100px"
-                     });
-                  }
-               } else if (par.name == 'menu_loaded') {
-                  $(".expander").css({
-                     width: "700px"
-                  });
-                  if ($(".receipt_wrapper").width() < 1100) {
-                     $(".receipt_wrapper").css({
-                        width: "1100px"
-                     });
-                  }
-               }
-            }
-         });
+      menu_open = true
+      $(".expander").css({
+         width: "1100px"
       });
+      if ($(".receipt_wrapper").width() < 1100) {
+         $(".receipt_wrapper").css({
+            width: "1100px"
+         });
+      }
    };
 
    var openReceipt = function() {
@@ -362,7 +310,6 @@ $(document).ready(function () {
    };
 
    var talk = function(origin, text) {
-      openMenu();
       var d = new Date();
       var n = d.getTime();
       messages.push({incoming: origin, message: text, timestamp: n});
@@ -456,21 +403,10 @@ $(document).ready(function () {
       $('#field').val('');
    };
 
-   // Initialize the conversation this could be done better
+   // Initialize the conversation
    var $chatBox = $('#content');
    var html = '<span style="height: 34px; display: inline-block;"></span>';
    $chatBox.append(html);
    loading();
-   var params = { input : '' };
-   if (conversation_id) {
-      params.conversation_id = conversation_id;
-      params.client_id = client_id;
-   }
-   $.post('/conversation', params)
-   .done(function onSucess(dialog) {
-      conversation_id = dialog.conversation.conversation_id;
-      client_id = dialog.conversation.client_id;
-      talk(true, dialog.conversation.response.join(''));
-   });
-
+   talk(true, 'Hi there! I’m fetch, how can I help?');
 });

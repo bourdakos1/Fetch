@@ -28,73 +28,34 @@ spawn      = require('child_process').spawn;
 // Bootstrap application settings
 require('./config/express')(app);
 
-// Create the service wrapper
-var nlClassifier = watson.natural_language_classifier({
-  url : 'https://gateway.watsonplatform.net/natural-language-classifier/api',
-  username : '334f40b3-0dc3-4ebf-83c0-42f861d7b23c',
-  password : 'CD0Tg9AnyEqv',
-  version  : 'v1'
+var conversation = watson.conversation({
 
 });
 
-app.post('/api/classify', function(req, res, next) {
-  var params = {
-    classifier: process.env.CLASSIFIER_ID || 'f1704ex55-nlc-4205', // pre-trained classifier
-    text: req.body.text
+app.post('/api/message', function(req, res) {
+  var payload = {
+    workspace_id: "387237d7-8d86-4f35-ac31-255bafd1bf0b",
+    context: {}
   };
-
-  nlClassifier.classify(params, function(err, results) {
-    if (err)
-      return next(err);
-    else
-      res.json(results);
+  if (req.body) {
+    if (req.body.question) {
+      payload.input = req.body.question;
+    }
+    if (req.body.context) {
+      // The client must maintain context/state
+      payload.context = req.body.context;
+    }
+  }
+  // Send the input to the conversation service
+  conversation.message(payload, function(err, data) {
+    if (err) {
+      return res.status(err.code || 500).json(err);
+    }
+    return res.json(data);
   });
 });
 
-// if bluemix credentials exists, then override local
-var credentials =  extend({
-   url: 'https://gateway.watsonplatform.net/dialog/api',
-   username: '089907cc-dc03-4e1b-b58c-4c22fb5d4042',
-   password: 'S3JRhYSRB9ue',
-   version: 'v1'
-}, bluemix.getServiceCreds('dialog')); // VCAP_SERVICES
-
-
-var dialog_id_in_json = (function() {
-   try {
-      var dialogsFile = path.join(path.dirname(__filename), 'dialogs', 'dialog-id.json');
-      var obj = JSON.parse(fs.readFileSync(dialogsFile));
-      return obj[Object.keys(obj)[0]].id;
-   } catch (e) {
-   }
-})();
-
-
-var dialog_id = process.env.DIALOG_ID || dialog_id_in_json || '06492d94-0eba-4c0f-9c52-c5a07146b3d1';
-
-// Create the service wrapper
-var dialog = watson.dialog(credentials);
-
-app.post('/conversation', function(req, res, next) {
-   var params = extend({ dialog_id: dialog_id }, req.body);
-   dialog.conversation(params, function(err, results) {
-      if (err)
-      return next(err);
-      else
-      res.json({ dialog_id: dialog_id, conversation: results});
-   });
-});
-
-app.post('/profile', function(req, res, next) {
-   var params = extend({ dialog_id: dialog_id }, req.body);
-   dialog.getProfile(params, function(err, results) {
-      if (err)
-      return next(err);
-      else
-      res.json(results);
-   });
-});
-
+// Entity Extraction
 app.post('/parse', function(req, res) {
    var question = req.body.question;
    var python_script = spawn('python3', ['trainer.py', question]);
@@ -112,7 +73,7 @@ app.post('/parse', function(req, res) {
    });
 });
 
-// This is silly, merge this eventually
+// Find menu item
 app.post('/wordcomp', function(req, res) {
    var subject = req.body.subject;
    var menu_items = JSON.stringify(req.body.menu_items);
@@ -131,8 +92,7 @@ app.post('/wordcomp', function(req, res) {
    });
 });
 
-// This is pretty bad
-// Create an actual python server for this after the competition
+// Build Menu
 global.data = '';
 app.post('/menu', function(req, res) {
    var subject = req.body.subject;
